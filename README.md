@@ -1,6 +1,6 @@
 # stream-batch-promise
 
-A lightweight, dependency-free module to perform batched asynchronous operations on a stream of objects.
+A lightweight module to perform batched asynchronous operations on a stream of objects.
 
 ## Installation
 
