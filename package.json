@@ -1,0 +1,38 @@
+{
+  "name": "stream-batch-promise",
+  "version": "1.0.0",
+  "description": "Perform batched asynchronous operations on a stream of objects",
+  "main": "./src/index.js",
+  "scripts": {
+    "build": "babel src --out-dir build",
+    "prepublish": "npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dan-kwiat/stream-batch-promise.git"
+  },
+  "keywords": [
+    "stream",
+    "batch",
+    "promise",
+    "async",
+    "asynchronous",
+    "bulk",
+    "pipe"
+  ],
+  "author": {
+    "name": "Dan Kwiatkowski",
+    "url": "https://twitter.com/dan_kwiat"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dan-kwiat/stream-batch-promise/issues"
+  },
+  "homepage": "https://github.com/dan-kwiat/stream-batch-promise#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.1.0",
+    "@babel/core": "^7.1.0",
+    "@babel/preset-env": "^7.1.0"
+  }
+}
