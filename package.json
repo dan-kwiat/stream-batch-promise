@@ -1,6 +1,6 @@
 {
   "name": "stream-batch-promise",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Perform batched asynchronous operations on a stream of objects",
   "main": "./src/index.js",
   "scripts": {
