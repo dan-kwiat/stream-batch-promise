@@ -28,7 +28,7 @@ const parser = x => ({
   }
 })
 
-const getPromise = (updateObjects, counter) => {
+const batchUpdate = (updateObjects, counter) => {
   log.info(`Streamed through ${counter} documents`)
   return new Promise((resolve, reject) => {
     Model.collection.bulkWrite(
@@ -51,7 +51,7 @@ const options = {
 streamBatchPromise(
   mongooseCursor,
   parser,
-  getPromise,
+  batchUpdate,
   options
 )
 .then(count => {
@@ -65,14 +65,14 @@ streamBatchPromise(
 ## Docs
 
 ```javascript
-streamBatchPromise(stream, parser, getPromise, options)
+streamBatchPromise(stream, parser, processBatch, options)
 ```
 
 Returns a Promise which is resolved when the stream has ended and all asynchronous operations are successful.
 
 * `stream` - a readable stream in object mode.
-* `parser(streamItem)` - parses a streamed item before it's batched & processed by `getPromise`.
-* `getPromise(parsedItems, counter)` - takes an array of parsed items and returns a Promise which should resolve when desired operations are complete.
+* `parser(streamItem)` - parses a streamed item before it's batched & processed.
+* `processBatch(parsedItems, counter)` - takes an array of parsed items and the (integer) stream counter. Should return a Promise which resolves when desired operations are complete.
 * `options`
   * `batchSize` - a positive integer which determines the maximum length of `parsedItems`.  Default is `100`.
   * `dataEvent` - the string name of the data event to look for.  Default is `data`.
