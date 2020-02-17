@@ -46,11 +46,11 @@ const batchUpdate = (updateObjects, counter) => {
 
 const options = {
   batchSize: 200,
+  parser,
 }
 
 streamBatchPromise(
   mongooseCursor,
-  parser,
   batchUpdate,
   options
 )
@@ -65,16 +65,16 @@ streamBatchPromise(
 ## Docs
 
 ```javascript
-streamBatchPromise(stream, parser, processBatch, options)
+streamBatchPromise(stream, batchHandler, options)
 ```
 
 Returns a Promise which is resolved when the stream has ended and all asynchronous operations are successful.
 
 * `stream` - a readable stream in object mode.
-* `parser(streamItem)` - parses a streamed item before it's batched & processed.
-* `processBatch(parsedItems, counter)` - takes an array of parsed items and the (integer) stream counter. Should return a Promise which resolves when desired operations are complete.
+* `batchHandler(parsedItems, counter)` - takes an array of parsed items and the (integer) stream counter. Should return a Promise which resolves when desired operations are complete.
 * `options`
   * `batchSize` - a positive integer which determines the maximum length of `parsedItems`.  Default is `100`.
   * `dataEvent` - the string name of the data event to look for.  Default is `data`.
   * `endEvent` - the string name of the end event to look for.  Default is `end`.
   * `errorEvent` - the string name of the error event to look for.  Default is `error`.
+  * `parser(streamItem)` - parses a streamed item before it's batched & processed.

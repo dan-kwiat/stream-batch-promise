@@ -3,9 +3,10 @@ const defaultOptions = {
   dataEvent: 'data',
   endEvent: 'end',
   errorEvent: 'error',
+  parser: null,
 }
 
-const streamBatchPromise = (stream, parser, getPromise, options) => {
+const streamBatchPromise = (stream, batchHandler, options) => {
   return new Promise((resolve, reject) => {
     const opts = { ...defaultOptions, ...options }
 
@@ -14,11 +15,11 @@ const streamBatchPromise = (stream, parser, getPromise, options) => {
 
     stream.on(opts.dataEvent, x => {
       counter ++
-      items.push(parser(x))
+      items.push(opts.parser ? opts.parser(x) : x)
 
       if (counter % opts.batchSize === 0) {
         stream.pause()
-        getPromise(
+        batchHandler(
           items.splice(0, batchSize),
           counter
         )
@@ -31,7 +32,7 @@ const streamBatchPromise = (stream, parser, getPromise, options) => {
 
     stream.on(opts.endEvent, () => {
       if (counter % opts.batchSize !== 0) {
-        getPromise(items, counter)
+        batchHandler(items, counter)
         .then(() => {
           resolve(counter)
         })
