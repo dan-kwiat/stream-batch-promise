@@ -35,54 +35,46 @@ Returns a Promise which is resolved when the stream has ended and all asynchrono
 
 ## Example
 
-Update all documents in a MongoDB collection:
+Process a very large CSV:
 
 ```javascript
-const mongoose = require('mongoose')
+const fs = require('fs')
+const csv = require('csv-parser')
 const streamBatchPromise = require('stream-batch-promise')
-const log = require('my-favourite-logger').createLogger()
 
-const Model = mongoose.model(...)
+const FILE_PATH = './my-file.csv'
 
-const mongooseCursor = Model.find().cursor()
+const parser = item => {
+  return item.id // say we're only interested in the id column
+}
 
-const parser = x => ({
-  updateOne: {
-    filter: { _id: x._doc._id },
-    update: { $set: { count: x._doc.count + 1 } },
-  }
-})
-
-const batchUpdate = (updateObjects, counter) => {
-  log.info(`Streamed through ${counter} documents`)
+const batchHandler = (ids, counter) => {
+  console.log(`Processing items: ${counter}`)
   return new Promise((resolve, reject) => {
-    Model.collection.bulkWrite(
-      updateObjects,
-      { "ordered": true, w: 1 },
-      (err, response) => {
-        if (err) {
-          return reject(err)
-        }
-        return resolve(response)
-      }
-    )
+    try {
+      // do something with ids
+      resolve()
+    } catch(e) {
+      reject(e)
+    }
   })
 }
 
-const options = {
-  batchSize: 200,
-  parser,
-}
-
+const readStream = fs.createReadStream(FILE_PATH)
+const csvStream = readStream.pipe(csv())
 streamBatchPromise(
-  mongooseCursor,
-  batchUpdate,
-  options
+  csvStream,
+  batchHandler,
+  {
+    batchSize: 500,
+    parser,
+    upstream: readStream,
+  }
 )
-.then(count => {
-  log.info(`Finished streaming through ${count} documents`)
+.then(totalCount => {
+  console.log(`Successfully processed ${totalCount} items`)
 })
-.catch(err => {
-  log.error(err)
+.catch(e => {
+  console.log(`Oops something went wrong: ${e.message}`)
 })
 ```
