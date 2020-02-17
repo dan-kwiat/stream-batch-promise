@@ -6,7 +6,11 @@ A lightweight module to process a readable stream in batches.  The stream gets p
 ## Installation
 
 ```
+# With npm:
 npm install --save stream-batch-promise
+
+# Or yarn:
+yarn add stream-batch-promise
 ```
 
 
