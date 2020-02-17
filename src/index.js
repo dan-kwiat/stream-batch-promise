@@ -18,9 +18,11 @@ const streamBatchPromise = (stream, parser, getPromise, options) => {
 
       if (counter % opts.batchSize === 0) {
         stream.pause()
-        getPromise(items, counter)
+        getPromise(
+          items.splice(0, batchSize),
+          counter
+        )
         .then(() => {
-          items = []
           stream.resume()
         })
         .catch(reject)
@@ -31,7 +33,6 @@ const streamBatchPromise = (stream, parser, getPromise, options) => {
       if (counter % opts.batchSize !== 0) {
         getPromise(items, counter)
         .then(() => {
-          items = []
           resolve(counter)
         })
         .catch(reject)
