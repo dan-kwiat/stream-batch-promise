@@ -23,7 +23,7 @@ const streamBatchPromise = (stream, batchHandler, options) => {
       if (counter % opts.batchSize === 0) {
         upstream.pause()
         batchHandler(
-          items.splice(0, batchSize),
+          items.splice(0, opts.batchSize),
           counter
         )
         .then(() => {
