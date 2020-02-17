@@ -1,12 +1,33 @@
-# stream-batch-promise
+# Stream, Batch, Promise
 
-A lightweight module to perform batched asynchronous operations on a stream of objects.
+A lightweight module to process a readable stream in batches.  The stream gets paused while each batch is being processed (asynchronously).
+
 
 ## Installation
 
 ```
 npm install --save stream-batch-promise
 ```
+
+
+## Docs
+
+```javascript
+streamBatchPromise(stream, batchHandler, [options])
+```
+
+Returns a Promise which is resolved when the stream has ended and all asynchronous operations are successful.
+
+* `stream` - a readable stream in object mode.
+* `batchHandler(parsedItems, counter)` - takes an array of parsed items and the (integer) stream counter. Should return a Promise which resolves when desired operations are complete.
+* `options`
+  * `batchSize` - a positive integer which determines the maximum length of `parsedItems`.  Default is `100`.
+  * `dataEvent` - the string name of the data event to look for.  Default is `data`.
+  * `endEvent` - the string name of the end event to look for.  Default is `end`.
+  * `errorEvent` - the string name of the error event to look for.  Default is `error`.
+  * `parser(streamItem)` - parses a streamed item before it's batched & processed.
+  * `upstream` - a `pause/resume`-able stream to pause while async operation is in progress.  By default `stream` is paused but if that consumes from another faster stream you may want to provide the upstream one to prevent backpressure issues.
+
 
 ## Example
 
@@ -61,20 +82,3 @@ streamBatchPromise(
   log.error(err)
 })
 ```
-
-## Docs
-
-```javascript
-streamBatchPromise(stream, batchHandler, options)
-```
-
-Returns a Promise which is resolved when the stream has ended and all asynchronous operations are successful.
-
-* `stream` - a readable stream in object mode.
-* `batchHandler(parsedItems, counter)` - takes an array of parsed items and the (integer) stream counter. Should return a Promise which resolves when desired operations are complete.
-* `options`
-  * `batchSize` - a positive integer which determines the maximum length of `parsedItems`.  Default is `100`.
-  * `dataEvent` - the string name of the data event to look for.  Default is `data`.
-  * `endEvent` - the string name of the end event to look for.  Default is `end`.
-  * `errorEvent` - the string name of the error event to look for.  Default is `error`.
-  * `parser(streamItem)` - parses a streamed item before it's batched & processed.
